@@ -1,5 +1,7 @@
 import React, {useState, Fragment} from 'react';
 import {makeStyles}from '@material-ui/core/styles';
+//import the messenger
+import Messenger from './Messenger';
 
 const useStyles = makeStyles({
     mainDiv: {
@@ -28,6 +30,7 @@ function Home() {
         <div className={classes.mainDiv}>
             hello {currentUser} and {messageRoom}
         </div>
+        <Messenger currentUser={currentUser} messageRoom={messageRoom}/>
         </Fragment>
     )
 }
