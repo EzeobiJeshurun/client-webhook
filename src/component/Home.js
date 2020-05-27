@@ -3,13 +3,23 @@ import {makeStyles}from '@material-ui/core/styles';
 //import the messenger
 import Messenger from './Messenger';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme =>({
     mainDiv: {
         width: '100%',
         backgroundColor : '#acf345',
         height: '100vh',
+    },
+    chatRoot: {
+        width: 361,
+        maxWidth: 362,
+        [theme.breakpoints.down("xs")]: {
+            width: "100vw",
+        }
+    },
+    chatHeader: {
+        
     }
-});
+}));
 
 function Home() {
 
@@ -28,9 +38,14 @@ function Home() {
     return (
         <Fragment>
         <div className={classes.mainDiv}>
-            hello {currentUser} and {messageRoom}
+        <div className={classes.chatRoot}>
+        <div> </div>
+        
         </div>
-        <Messenger currentUser={currentUser} messageRoom={messageRoom}/>
+            <h1>hello {currentUser} and {messageRoom}</h1>
+            <Messenger currentUser={currentUser} messageRoom={messageRoom}/>
+        </div>
+        
         </Fragment>
     )
 }
