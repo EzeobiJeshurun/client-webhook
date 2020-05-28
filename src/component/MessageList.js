@@ -1,13 +1,22 @@
-import React,{Fragment} from 'react';
+import React,{Fragment,useState} from 'react';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Badge from '@material-ui/core/Badge';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
+import DeleteIcon from '@material-ui/icons/Delete';
+import IconButton from '@material-ui/core/IconButton';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 import Divider from '@material-ui/core/Divider';
 import JeshurunAvatar from './images/jeshurunAvatar.jpg';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+//redux 
+import { addMessageToRoomStore, removeMessageFromRoomStore, clearRoomStore} from '../redux/actions/userActions'
+import {connect} from 'react-redux';
+
 
 
 const StyledBadge = withStyles((theme) => ({
@@ -47,6 +56,10 @@ const useStyles = makeStyles((theme) => ({
     position: 'relative',
     overflow: 'auto',
     maxHeight: 300,
+    minHeight: 150,
+    [theme.breakpoints.down("xs")]:{
+        maxHeight: 250,
+    }
   },
   listSection: {
     backgroundColor: 'inherit',
@@ -69,6 +82,14 @@ const useStyles = makeStyles((theme) => ({
     color: '#777b7e',
     fontSize: 12,
   },
+  theDeleteIconHide:{
+      display: 'none',
+  },
+  theDeleteIconShow: {
+      //display: 'inline',
+      //margin: 0,
+     // padding: 0,
+  }
 }));
 
 var mockStore = [{name: "jeshurun", message: "hi kssdjfkj skjfkljf skjf dskfjs  ksdjf kdjf dj ", id: 1, date: "30 May, 2020"},
@@ -79,8 +100,33 @@ var mockStore = [{name: "jeshurun", message: "hi kssdjfkj skjfkljf skjf dskfjs  
 ];
 
 
-function MessageList() {
-  const classes = useStyles();
+function MessageList(props) { 
+    const {TheChatHub} = props
+    const [toggle, setToggle] = useState(true);
+    const classes = useStyles();
+    dayjs.extend(relativeTime);
+
+    const deleleteMessage = (id) =>{
+      props.removeMessageFromRoomStore(id)
+      ToggleDeleteButton(id);
+    }
+    //Toggles Delete Button and changes ListItem background Color when an ListItem is pressed
+   const ToggleDeleteButton =(uniqueNumber) =>{
+       
+       const theDeleteIconAction = document.getElementById(`delete${uniqueNumber}`);
+       const theListItem = document.getElementById(`list${uniqueNumber}`) 
+       if(toggle){
+           setToggle(!toggle);
+           theListItem.style.backgroundColor = "#d3d3d3";
+          theDeleteIconAction.classList.remove(classes.theDeleteIconHide);
+       }else{
+           setToggle(!toggle);
+           theListItem.style.backgroundColor = "white";
+          theDeleteIconAction.classList.add(classes.theDeleteIconHide);
+       }
+    }
+
+  
 
  
 
@@ -88,9 +134,12 @@ function MessageList() {
     <List className={classes.root} >
     
     
-            {mockStore.map((item) => (
+            {TheChatHub.map((item) => (
+                
               <Fragment key={item.id}>  
-              <ListItem >
+              <ListItem id={`list${item.id}`} onClick={(event)=>{
+                  ToggleDeleteButton(item.id);
+              }} >
               <ListItemAvatar >
               <StyledBadge
                 overlap="circle"
@@ -104,17 +153,32 @@ function MessageList() {
                 </StyledBadge>
               </ListItemAvatar>
                 <ListItemText className={classes.inline} 
-                primary={<div>{item.name}<span className={classes.increaseDotInSpan}>.</span>
-                    <span className={classes.messageDate}>{item.date}</span>
-                </div>} secondary={item.message} />
+                primary={<div>{item.user=== "chatbot"? "Sibel": "you"}<span className={classes.increaseDotInSpan}>.</span>
+                    <span className={classes.messageDate}>{dayjs(item.time).fromNow()}</span>
+                </div>} secondary={item.text} />
+                <ListItemSecondaryAction id ={`delete${item.id}`} className={classes.theDeleteIconHide}>
+                    <IconButton onClick={()=>{
+                      deleleteMessage(item.id);
+                    }} edge="end" aria-label="delete">
+                      <DeleteIcon />
+                    </IconButton>
+                  </ListItemSecondaryAction>
               </ListItem>
               <Divider variant="inset" component="li" />
               </Fragment>
             ))}
-
+          <div id="usedToMakeElementScrollToView"></div>
     </List>
   );
 }
+const mapStateToProps = (state)=>({
+  TheChatHub: state.data.TheChatHub,
+})
 
+const mapActionsToProps = {
+  addMessageToRoomStore,
+  removeMessageFromRoomStore,
+  clearRoomStore
+}
 
-export default MessageList;
+export default connect(mapStateToProps,mapActionsToProps)(MessageList);
