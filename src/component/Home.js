@@ -26,8 +26,8 @@ const useStyles = makeStyles(theme =>({
         maxWidth: 360,
         maxHeight: 350,
         backgroundColor: '#fafafa',
-        [theme.breakpoints.down("xs")]: {
-            width: "98vw",
+        [theme.breakpoints.down("700")]: {
+            width: "100vw",
         }
     },
     chatHeader: {
