@@ -11,8 +11,10 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 import Divider from '@material-ui/core/Divider';
 import JeshurunAvatar from './images/jeshurunAvatar.jpg';
+import noImageJpg from './images/no-img.jpeg';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import ReactEmoji from 'react-emoji';
 //redux 
 import { addMessageToRoomStore, removeMessageFromRoomStore, clearRoomStore} from '../redux/actions/userActions'
 import {connect} from 'react-redux';
@@ -48,6 +50,8 @@ const StyledBadge = withStyles((theme) => ({
     },
   }))(Badge);
 
+
+
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
@@ -55,10 +59,11 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
     position: 'relative',
     overflow: 'auto',
-    maxHeight: 300,
-    minHeight: 150,
+    maxHeight: 400,
+    minHeight: 250,
     [theme.breakpoints.down("xs")]:{
         maxHeight: 250,
+        minHeight: 150,
     }
   },
   listSection: {
@@ -92,12 +97,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-var mockStore = [{name: "jeshurun", message: "hi kssdjfkj skjfkljf skjf dskfjs  ksdjf kdjf dj ", id: 1, date: "30 May, 2020"},
-{name: "jeshurun", message: "hi kssdjfkj skjfkljf skjf dskfjs  ksdjf kdjf dj ", id: 2, date: "30 May, 2020"},
-{name: "you", message: "hi kssdjfkj skjfkljf skjf dskfjs  ksdjf kdjf dj " , id: 3, date: "30 May, 2020"},
-{name: "jeshurun", message: "hi kssdjfkj skjfkljf skjf dskfjs jkjdkl fjlksm ssdsdksd ksdkdsf ksdjf kdjf dj ", id: 4, date: "30 May, 2020"},
-{name: "you", message: "hi kssdjfkj skjfkljf skjf dskfjs  ksdjf kdjf dj skjklsjfkjdfkjskdjfkdjfksjklfjskldjfskjdksjkdjskdjjsjfk ", id: 5, date: "30 May, 2020"}
-];
+
 
 
 function MessageList(props) { 
@@ -149,13 +149,13 @@ function MessageList(props) {
                  }}
                  variant="dot"
                         >
-                <Avatar alt="Jeshurun" src={JeshurunAvatar} />
+                <Avatar alt="Jeshurun" src={item.user ==="chatbot" ?JeshurunAvatar: noImageJpg} />
                 </StyledBadge>
               </ListItemAvatar>
                 <ListItemText className={classes.inline} 
                 primary={<div>{item.user=== "chatbot"? "Sibel": "you"}<span className={classes.increaseDotInSpan}>.</span>
                     <span className={classes.messageDate}>{dayjs(item.time).fromNow()}</span>
-                </div>} secondary={item.text} />
+                </div>} secondary={ReactEmoji.emojify(item.text)} />
                 <ListItemSecondaryAction id ={`delete${item.id}`} className={classes.theDeleteIconHide}>
                     <IconButton onClick={()=>{
                       deleleteMessage(item.id);

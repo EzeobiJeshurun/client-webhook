@@ -6,7 +6,7 @@ import {makeStyles} from '@material-ui/core/styles';
 //client side socket.io for communicating with backend socket.io
 import io from 'socket.io-client';
 
-
+import Help from './Help';
 //redux
 import { addMessageToRoomStore, removeMessageFromRoomStore, clearRoomStore} from '../redux/actions/userActions'
 import {connect} from 'react-redux';
@@ -53,13 +53,24 @@ const useStyles = makeStyles({
         height: 30,
         color: '#f2f3f4',
         borderColor: '#f2f3f4',
-    }
+    },
+    
 
 });
 
 function Messenger(props) {
     //extra things you want from the props
-    const {currentUser, messageRoom, TheChatHub }= props;
+    const { TheChatHub }= props;
+     //A random number generator, provides an integer id
+     const identityForPresentUser = Math.floor(Math.random()*10000000000);
+     //used to create and identify a specific channel or room for the communication
+     const  identityForMessageRoom = Math.floor(Math.random()*10000000000);
+ 
+     //the state below is used to identify the specific user interacting
+     //with the chat bot, it is sent to the server and user in the front-end as well
+     const [currentUser, setCurrentUser]= useState(identityForPresentUser);
+     //MessageRoom id sent to server to used in creating a session or room 
+     const [messageRoom, setMessageRoom]= useState(identityForMessageRoom);
 
     const classes = useStyles();
     const [message, setMessage] = useState('');
@@ -71,12 +82,14 @@ function Messenger(props) {
 
 
     //used to make the most recent message scrollToView
-    const pushRecentMessageToScreenView = ()=>{
+    const pushRecentMessageToScreenView = useCallback(()=>{
         document.getElementById("usedToMakeElementScrollToView").scrollIntoView();
-    }
+    },[]);
    
     //the Endpoint OR SERVER which the socket points to
-    const ENDPOINT = "localhost:5000";
+    //for development, you can change the endpoint below to "localhost:5000"
+    // but when you deploy to a live sever, replace it with the url of your live server
+    const ENDPOINT = "https://sibel-chatbot.herokuapp.com/";
     //runs when the component renders
     useEffect(()=>{
         //creating an instance of the client-socket connected to the server-socket
@@ -142,6 +155,7 @@ useEffect(()=>{
             />
             </div>
             <div className={classes.sendButtonDiv}>
+            <Help/>
             <Button onClick={(event)=>{
                 sendMessage(event);
             }} className={classes.sendButton} variant="outlined">send</Button></div>

@@ -1,33 +1,32 @@
-import React, {useState, Fragment} from 'react';
+import React, { Fragment} from 'react';
 import {makeStyles,withStyles}from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Badge from '@material-ui/core/Badge';
 //import the messenger
 import Messenger from './Messenger';
 import MessageList from './MessageList';
+import lake from './images/no-img.jpeg'
 
 //redux
 import { addMessageToRoomStore, removeMessageFromRoomStore, clearRoomStore} from '../redux/actions/userActions'
 import {connect} from 'react-redux';
 const useStyles = makeStyles(theme =>({
-    mainDiv: {
-        position: 'relative',
-        width: '100%',
-        backgroundColor : '#acf345',
-        height: '100vh',
-    },
+ 
+   
     chatRoot: {
+        marginTop: 15,
         borderRadius: 15,
-        position: 'absolute',
+        position: 'relative',
         display: 'flex',
         flexDirection: 'column',
         width: 360,
         overflow: 'hidden',
-        maxWidth: 360,
-        maxHeight: 350,
+        maxWidth: 380,
+        maxHeight: 450,
         backgroundColor: '#fafafa',
         [theme.breakpoints.down("700")]: {
             width: "100vw",
+            maxHeight: 350,
         }
     },
     chatHeader: {
@@ -86,19 +85,11 @@ function Home(props) {
     const { TheChatHub } = props;
     const classes = useStyles();
 
-    //A random number generator, provides an integer id
-    const identityForPresentUser = Math.floor(Math.random()*10000000000);
-    //used to create and identify a specific channel or room for the communication
-    const  identityForMessageRoom = Math.floor(Math.random()*10000000000);
-
-    //the state below is used to identify the specific user interacting
-    //with the chat bot, it is sent to the server and user in the front-end as well
-    const [currentUser, setCurrentUser]= useState(identityForPresentUser);
-    //MessageRoom id sent to server to used in creating a session or room 
-    const [messageRoom, setMessageRoom]= useState(identityForMessageRoom);
+   
     return (
         <Fragment>
-        <div className={classes.mainDiv}>
+        <div id="animate-area" >
+        <div className="modal" ><span>Sibel Recruiters</span></div>
         <div className={classes.chatRoot}>
         <div className={classes.chatHeader}> 
         <div className={classes.badgeIconAtHeader}>
@@ -117,9 +108,9 @@ function Home(props) {
         </div>
         
         <MessageList />
-        <Messenger currentUser={currentUser} messageRoom={messageRoom}/>
+        <Messenger />
         </div>
-            <h1>hello {currentUser} and {messageRoom}</h1>
+            
             
         </div>
         
